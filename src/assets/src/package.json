@@ -1,0 +1,26 @@
+{
+  "name": "yii2-admin-modals",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server --progress --color",
+    "build": "NODE_ENV=production webpack --progress --display-error-details --color",
+    "build-dev": "NODE_ENV=development webpack --progress --display-error-details --color",
+    "precommit": "eslint src"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.22.2",
+    "babel-core": "^6.21.0",
+    "babel-eslint": "^7.1.1",
+    "babel-loader": "^6.2.10",
+    "babel-preset-latest": "^6.22.0",
+    "eslint": "^3.15.0",
+    "eslint-loader": "^1.6.1",
+    "extract-text-webpack-plugin": "^2.0.0-rc.0",
+    "file-loader": "^0.10.0",
+    "resolve-url-loader": "^1.6.1",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.3.0"
+  }
+}
