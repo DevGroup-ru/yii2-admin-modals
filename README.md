@@ -124,6 +124,26 @@ Example code:
 </a>
 ```
 
+
+### How to manually trigger modal?
+
+An example for showing confirmation on deletion of jstree node:
+
+```js
+function confirmDelete(node) {
+  AdminModals.modalOpen({
+    url: '/category/delete',
+    data: {
+      id: $(node.reference[0]).data('id')
+    },
+    method: 'GET'
+  });
+  return false;
+}
+```
+
+That will display `/category/delete?id=###` in modal.
+
 ## TODO
 
 - [ ] Describe data option

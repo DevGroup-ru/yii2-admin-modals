@@ -171,7 +171,7 @@ var AdminModals = function () {
       console.log('start extract buttons');
       var frameWindow = $frame[0].contentWindow;
       var f$ = frameWindow.$;
-      var $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit]');
+      var $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
       var $modalButtons = [];
       $buttons.each(function () {
         var _this3 = this;
@@ -184,7 +184,7 @@ var AdminModals = function () {
         $(this).hide();
       });
 
-      $modal.find('.modal-footer').append($('<div class="btn-group"></div>').append($modalButtons));
+      $modal.find('.modal-footer').empty().append($modalButtons);
     }
   }, {
     key: 'combineUrl',
@@ -222,8 +222,6 @@ var AdminModals = function () {
         settings[key] = userSettings[key];
       });
       this.settings = settings;
-
-      this.actionMatchers = window.AdminModalsActionMatchers || [];
 
       this.events = {};
       this.uniqueIdPrefix = Math.random().toString();

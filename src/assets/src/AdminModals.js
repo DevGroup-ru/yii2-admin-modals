@@ -106,7 +106,7 @@ class AdminModals {
     console.log('start extract buttons');
     const frameWindow = $frame[0].contentWindow;
     const f$ = frameWindow.$;
-    const $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit]');
+    const $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
     const $modalButtons = [];
     $buttons.each(function() {
       const $modalButton = $(this.outerHTML);
@@ -115,10 +115,11 @@ class AdminModals {
       $(this).hide();
     });
 
-    $modal.find('.modal-footer').append(
-      $('<div class="btn-group"></div>')
-        .append($modalButtons)
-    );
+    $modal.find('.modal-footer')
+      .empty()
+      .append(
+        $modalButtons
+      );
   }
 
   combineUrl(options, magicParamValue = 'modal') {
@@ -150,8 +151,6 @@ class AdminModals {
       settings[key] = userSettings[key];
     });
     this.settings = settings;
-
-    this.actionMatchers = window.AdminModalsActionMatchers || [];
 
     this.events = {};
     this.uniqueIdPrefix = Math.random().toString();
