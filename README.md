@@ -50,7 +50,7 @@ return [
 
 `AdminModals` components has the following params:
 
-- **layoutFile**(required) - The path to simplified layout file without your headers, footers, containers etc. This layout is used when your action is rendered inside modal's frame.
+- **layoutFile**_(required)_ - The path to simplified layout file without your headers, footers, containers etc. This layout is used when your action is rendered inside modal's frame.
 - **magicParamKey** and **uniqueParamKey** - Names of GET parameters that are used for communicating between JS part and yii2 backend.
 
 ### 2. Add `admin-modals` action
@@ -138,7 +138,10 @@ function confirmDelete(node) {
     data: {
       id: $(node.reference[0]).data('id')
     },
-    method: 'GET'
+    method: 'GET',
+    closeCallback: function() {
+      alert('Thank you!');
+    }
   });
   return false;
 }
@@ -146,11 +149,22 @@ function confirmDelete(node) {
 
 That will display `/category/delete?id=###` in modal.
 
+
+### Helpers
+
+#### JsTreeHelper
+
+A helper for jstree `DevGroup\AdminModals\helpers\JsTreeHelper` has the following static functions:
+
+- **modalOpen**_($route, $method = 'GET', $attributesMapping = ['id' => 'id'])_ - Used for opening modals on context-menu actions. 
+    Attributes mappings describe additional data params to be added to request. 
+    Key is the name of target param, value is the key of data attribute of jstree node which stores target value.
+
 ## TODO
 
-- [ ] Describe data option
-- [ ] Implement callbacks
-- [ ] Callbacks documentation
+- [x] Implement callback
+- [ ] Add more events in $ style
+- [ ] Document all options
 - [ ] Describe the main concept(iframe -> location|form.submit -> storage events -> extract buttons ...)
 - [ ] Test app
     - [ ] Simple modal demo
