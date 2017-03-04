@@ -5,6 +5,28 @@ class AdminModals {
     this.bindModals();
   }
 
+  init() {
+    const userSettings = window.AdminModalsSettings || {};
+    const settings = {
+      modalActionSelector: '.admin-modal-trigger',
+      dataAttribute: 'adminModals',
+      adminModalPageUrl: '/site/admin-modal',
+      adminModalFrameFormSelector: '.admin-modal__frame-form',
+      magicParamKey: '__admin_modals',
+      adminModalsUniqueParamKey: '__admin-modals__unique-id'
+    };
+    Object.keys(userSettings).forEach(key => {
+      settings[key] = userSettings[key];
+    });
+    this.settings = settings;
+
+    this.events = {};
+    this.uniqueIdPrefix = Math.random().toString();
+    this.uniqueIdCounter = 0;
+
+    window.addEventListener('storage', (e) => this.receiveStorageMessage(e));
+  }
+
   bindModals() {
     const that = this;
 
@@ -118,12 +140,14 @@ class AdminModals {
     }
     const maxWindowWidth = options.maxWindowWidth || 95;
     const maxWindowHeight = options.maxWindowHeight || 80;
+    const minWindowWidth = options.minWindowWidth || 300;
+    const minWindowHeight = options.minWindowHeight || 200;
 
     const $frameDocument = $($frame[0].contentWindow.document);
     const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
     const parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
-    const frameWidth = $frameDocument.width() + 20;
-    const frameHeight = $frameDocument.height();
+    const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
+    const frameHeight = Math.max($frameDocument.height(), minWindowHeight);
     const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
     const newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
 
@@ -164,28 +188,6 @@ class AdminModals {
       });
     }
     return url;
-  }
-
-  init() {
-    const userSettings = window.AdminModalsSettings || {};
-    const settings = {
-      modalActionSelector: '.admin-modal-trigger',
-      dataAttribute: 'adminModals',
-      adminModalPageUrl: '/site/admin-modal',
-      adminModalFrameFormSelector: '.admin-modal__frame-form',
-      magicParamKey: '__admin_modals',
-      adminModalsUniqueParamKey: '__admin-modals__unique-id'
-    };
-    Object.keys(userSettings).forEach(key => {
-      settings[key] = userSettings[key];
-    });
-    this.settings = settings;
-
-    this.events = {};
-    this.uniqueIdPrefix = Math.random().toString();
-    this.uniqueIdCounter = 0;
-
-    window.addEventListener('storage', (e) => this.receiveStorageMessage(e));
   }
 
   receiveStorageMessage(e) {

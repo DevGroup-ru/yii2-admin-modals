@@ -87,6 +87,33 @@ var AdminModals = function () {
   }
 
   _createClass(AdminModals, [{
+    key: 'init',
+    value: function init() {
+      var _this = this;
+
+      var userSettings = window.AdminModalsSettings || {};
+      var settings = {
+        modalActionSelector: '.admin-modal-trigger',
+        dataAttribute: 'adminModals',
+        adminModalPageUrl: '/site/admin-modal',
+        adminModalFrameFormSelector: '.admin-modal__frame-form',
+        magicParamKey: '__admin_modals',
+        adminModalsUniqueParamKey: '__admin-modals__unique-id'
+      };
+      Object.keys(userSettings).forEach(function (key) {
+        settings[key] = userSettings[key];
+      });
+      this.settings = settings;
+
+      this.events = {};
+      this.uniqueIdPrefix = Math.random().toString();
+      this.uniqueIdCounter = 0;
+
+      window.addEventListener('storage', function (e) {
+        return _this.receiveStorageMessage(e);
+      });
+    }
+  }, {
     key: 'bindModals',
     value: function bindModals() {
       var that = this;
@@ -119,7 +146,7 @@ var AdminModals = function () {
   }, {
     key: 'modalOpen',
     value: function modalOpen(options) {
-      var _this = this;
+      var _this2 = this;
 
       // create modal
       var $modal = $('\n<div class="modal fade AdminModal" tabindex="-1" role="dialog" data-width="100%">\n  <div class="modal-dialog" role="document">\n    <div class="modal-content">\n      <div class="modal-header">\n        <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">\n            <i class="fa fa-times fa-2x"></i>\n        </a>\n        <a href="' + this.combineUrl(options, 'tab') + '" target="_blank" class="modal-title">\n            ' + options.url + '\n        </a>\n      </div>\n     \n      <iframe src="' + this.settings.adminModalPageUrl + '" frameborder="0" class="modal-body modal-frame"></iframe>\n    \n      <div class="modal-footer">\n        \n      </div>\n    </div>\n  </div>\n</div>');
@@ -132,14 +159,14 @@ var AdminModals = function () {
       $modal.on('shown.bs.modal', function () {
         var $frame = $modal.find('.modal-frame');
         $frame.ready(function () {
-          _this.loadInFrame($frame, options, $modal);
+          _this2.loadInFrame($frame, options, $modal);
           return false;
         });
       }).on('hidden.bs.modal', function () {
         var uniqueId = $modal.data('adminModalsUniqueId');
         // stop listening for storage
         localStorage.removeItem('adminModalsMessage:' + uniqueId);
-        delete _this.events[uniqueId];
+        delete _this2.events[uniqueId];
         // remove modal DOM element
         $modal.remove();
       });
@@ -190,33 +217,6 @@ var AdminModals = function () {
       return url;
     }
   }, {
-    key: 'init',
-    value: function init() {
-      var _this2 = this;
-
-      var userSettings = window.AdminModalsSettings || {};
-      var settings = {
-        modalActionSelector: '.admin-modal-trigger',
-        dataAttribute: 'adminModals',
-        adminModalPageUrl: '/site/admin-modal',
-        adminModalFrameFormSelector: '.admin-modal__frame-form',
-        magicParamKey: '__admin_modals',
-        adminModalsUniqueParamKey: '__admin-modals__unique-id'
-      };
-      Object.keys(userSettings).forEach(function (key) {
-        settings[key] = userSettings[key];
-      });
-      this.settings = settings;
-
-      this.events = {};
-      this.uniqueIdPrefix = Math.random().toString();
-      this.uniqueIdCounter = 0;
-
-      window.addEventListener('storage', function (e) {
-        return _this2.receiveStorageMessage(e);
-      });
-    }
-  }, {
     key: 'receiveStorageMessage',
     value: function receiveStorageMessage(e) {
       console.log('message: ', e);
@@ -243,12 +243,14 @@ var AdminModals = function () {
       }
       var maxWindowWidth = options.maxWindowWidth || 95;
       var maxWindowHeight = options.maxWindowHeight || 80;
+      var minWindowWidth = options.minWindowWidth || 300;
+      var minWindowHeight = options.minWindowHeight || 200;
 
       var $frameDocument = $($frame[0].contentWindow.document);
       var parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
       var parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
-      var frameWidth = $frameDocument.width() + 20;
-      var frameHeight = $frameDocument.height();
+      var frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
+      var frameHeight = Math.max($frameDocument.height(), minWindowHeight);
       var newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
       var newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
 

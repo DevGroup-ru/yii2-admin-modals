@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\Event;
 use yii\helpers\Json;
+use yii\web\Application;
 use yii\widgets\ActiveForm;
 
 class AdminModals extends Component
@@ -87,6 +88,15 @@ js;
         //! @todo add Links modifier JS - append magicParam and uniqueId to all links on DOM ready
         // copypaste some js related to is hash, is external from
         // https://github.com/miguel-perez/smoothState.js/blob/master/src/jquery.smoothState.js
+
+        // modify redirect
+        Yii::$app->on(Application::EVENT_AFTER_ACTION, function ($e) {
+            if ($location = Yii::$app->response->headers->get('Location')) {
+                if (strpos($location, $this->uniqueParamKey) === false) {
+                    Yii::$app->response->headers->set('Location', $this->appendParams($location));
+                }
+            }
+        });
     }
 
     /**
@@ -106,13 +116,19 @@ js;
             }
             $form->action[$this->uniqueParamKey] = $this->uniqueId;
         } else {
-            if (strpos($form->action, '?') === false) {
-                $form->action .= '?';
-            }
-            if ($this->magicParamValue !== null) {
-                $form->action .= "&{$this->magicParamKey}={$this->magicParamValue}";
-            }
-            $form->action .= "&{$this->uniqueParamKey}={$this->uniqueId}";
+            $form->action = $this->appendParams($form->action);
         }
+    }
+
+    protected function appendParams($url)
+    {
+        if (strpos($url, '?') === false) {
+            $url .= '?';
+        }
+        if ($this->magicParamValue !== null && strpos($url, $this->magicParamKey) === false) {
+            $url .= "&{$this->magicParamKey}={$this->magicParamValue}";
+        }
+        $url .= "&{$this->uniqueParamKey}={$this->uniqueId}";
+        return $url;
     }
 }
