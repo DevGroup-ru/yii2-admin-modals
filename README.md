@@ -29,24 +29,26 @@ Usage
 
 ### 1. Configure application
 
-Attach `DevGroup\AdminModals\behaviors\AdminModalsBehavior` either to controller or application for use in all controllers.
+Add `DevGroup\AdminModals\components\AdminModals` component with component id `adminModals`.
 
-For using in all controllers - attach behavior through modifying main app config:
+Modify your main web application config:
 
 ```php
 return [
     // your app config here
     // ...
     
-    // add behavior
-    'as adminModals' => [
-        'class' => AdminModalsBehavior::class,
-        'layoutFile' => '@app/actions/views/empty-layout',
+    'components' => [
+        'adminModals' => [
+            'class' => 'DevGroup\AdminModals\components\AdminModals',
+            'layoutFile' => '@app/actions/views/empty-layout',
+        ],
+        // your other app components
     ],
 ];
 ```
 
-`AdminModalsBehavior` takes the following params:
+`AdminModals` components has the following params:
 
 - **layoutFile**(required) - The path to simplified layout file without your headers, footers, containers etc. This layout is used when your action is rendered inside modal's frame.
 - **magicParamKey** and **uniqueParamKey** - Names of GET parameters that are used for communicating between JS part and yii2 backend.
