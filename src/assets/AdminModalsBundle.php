@@ -9,6 +9,7 @@ class AdminModalsBundle extends AssetBundle
 {
     public $depends = [
         BootstrapPluginAsset::class,
+        BootstrapModalAsset::class,
     ];
 
     public $css = [

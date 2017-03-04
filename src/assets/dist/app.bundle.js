@@ -149,7 +149,7 @@ var AdminModals = function () {
       var _this2 = this;
 
       // create modal
-      var $modal = $('\n<div class="modal fade AdminModal" tabindex="-1" role="dialog" data-width="100%">\n  <div class="modal-dialog" role="document">\n    <div class="modal-content">\n      <div class="modal-header">\n        <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">\n            <i class="fa fa-times fa-2x"></i>\n        </a>\n        <a href="' + this.combineUrl(options, 'tab') + '" target="_blank" class="modal-title">\n            ' + options.url + '\n        </a>\n      </div>\n     \n      <iframe src="' + this.settings.adminModalPageUrl + '" frameborder="0" class="modal-body modal-frame"></iframe>\n    \n      <div class="modal-footer">\n        \n      </div>\n    </div>\n  </div>\n</div>');
+      var $modal = $('\n<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;">   \n      <div class="modal-header">\n        <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">\n            <i class="fa fa-times fa-2x"></i>\n        </a>\n        <a href="' + this.combineUrl(options, 'tab') + '" target="_blank" class="modal-title">\n            ' + options.url + '\n        </a>\n      </div>\n     \n      <iframe src="' + this.settings.adminModalPageUrl + '" frameborder="0" class="modal-body modal-frame"></iframe>\n    \n      <div class="modal-footer">\n        \n      </div>  \n</div>');
       $modal.find('.modal-title').click(function () {
         $modal.modal('hide');
         return true;
@@ -245,22 +245,22 @@ var AdminModals = function () {
       if (options.dontResizeWindow === true) {
         return;
       }
-      var maxWindowWidth = options.maxWindowWidth || 95;
+      // const maxWindowWidth = options.maxWindowWidth || 95;
       var maxWindowHeight = options.maxWindowHeight || 80;
-      var minWindowWidth = options.minWindowWidth || 300;
+      // const minWindowWidth = options.minWindowWidth || 300;
       var minWindowHeight = options.minWindowHeight || 200;
 
       var $frameDocument = $($frame[0].contentWindow.document);
-      var parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
+      // const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
       var parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
-      var frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
+      // const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
       var frameHeight = Math.max($frameDocument.height(), minWindowHeight);
-      var newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
+      // const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
       var newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
 
       $modal.find('.modal-dialog').css('display', 'table');
-      $frame.width(newWidth);
-      $frame.height(newHeight);
+      // $frame.width(newWidth);
+      $frame.attr('style', $frame.attr('style') + '; height: ' + newHeight + 'px !important');
     }
   }, {
     key: 'extractFormButtons',

@@ -59,9 +59,7 @@ class AdminModals {
   modalOpen(options) {
     // create modal
     const $modal = $(`
-<div class="modal fade AdminModal" tabindex="-1" role="dialog" data-width="100%">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
+<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;">   
       <div class="modal-header">
         <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">
             <i class="fa fa-times fa-2x"></i>
@@ -75,9 +73,7 @@ class AdminModals {
     
       <div class="modal-footer">
         
-      </div>
-    </div>
-  </div>
+      </div>  
 </div>`);
     $modal.find('.modal-title').click(function() {
       $modal.modal('hide');
@@ -142,22 +138,22 @@ class AdminModals {
     if (options.dontResizeWindow === true) {
       return;
     }
-    const maxWindowWidth = options.maxWindowWidth || 95;
+    // const maxWindowWidth = options.maxWindowWidth || 95;
     const maxWindowHeight = options.maxWindowHeight || 80;
-    const minWindowWidth = options.minWindowWidth || 300;
+    // const minWindowWidth = options.minWindowWidth || 300;
     const minWindowHeight = options.minWindowHeight || 200;
 
     const $frameDocument = $($frame[0].contentWindow.document);
-    const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
+    // const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
     const parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
-    const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
+    // const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
     const frameHeight = Math.max($frameDocument.height(), minWindowHeight);
-    const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
+    // const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
     const newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
 
     $modal.find('.modal-dialog').css('display', 'table');
-    $frame.width(newWidth);
-    $frame.height(newHeight);
+    // $frame.width(newWidth);
+    $frame.attr('style', `${$frame.attr('style')}; height: ${newHeight}px !important`);
   }
 
   static extractFormButtons($frame, options, $modal) {

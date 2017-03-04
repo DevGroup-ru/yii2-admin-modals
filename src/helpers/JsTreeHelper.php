@@ -33,9 +33,7 @@ function modalOpen(node) {
     data: $data,
     method: $method,
     closeCallback: function() {
-      var jstree = $(node.reference.context).jstree();
-      var parent = jstree.get_parent(node.reference[0]);
-      jstree.refresh_node(parent);
+      $(node.reference.context).jstree().refresh();
     }
   });
   return true;
