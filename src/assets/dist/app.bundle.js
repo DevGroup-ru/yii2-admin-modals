@@ -135,6 +135,13 @@ var AdminModals = function () {
           _this.loadInFrame($frame, options, $modal);
           return false;
         });
+      }).on('hidden.bs.modal', function () {
+        var uniqueId = $modal.data('adminModalsUniqueId');
+        // stop listening for storage
+        localStorage.removeItem('adminModalsMessage:' + uniqueId);
+        delete _this.events[uniqueId];
+        // remove modal DOM element
+        $modal.remove();
       });
 
       $modal.modal('show');
@@ -142,8 +149,6 @@ var AdminModals = function () {
   }, {
     key: 'loadInFrame',
     value: function loadInFrame($frame, options, $modal) {
-      var _this2 = this;
-
       $frame.off('ready');
       var frameDocument = $frame[0].contentWindow.document;
 
@@ -162,29 +167,9 @@ var AdminModals = function () {
         $form.submit();
       }
       this.events[$modal.data('adminModalsUniqueId')] = function () {
-        _this2.extractFormButtons($frame, options, $modal);
+        AdminModals.extractFormButtons($frame, options, $modal);
+        AdminModals.resizeModal($frame, options, $modal);
       };
-    }
-  }, {
-    key: 'extractFormButtons',
-    value: function extractFormButtons($frame, options, $modal) {
-      console.log('start extract buttons');
-      var frameWindow = $frame[0].contentWindow;
-      var f$ = frameWindow.$;
-      var $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
-      var $modalButtons = [];
-      $buttons.each(function () {
-        var _this3 = this;
-
-        var $modalButton = $(this.outerHTML);
-        $modalButton.click(function () {
-          return $(_this3).click();
-        });
-        $modalButtons.push($modalButton);
-        $(this).hide();
-      });
-
-      $modal.find('.modal-footer').empty().append($modalButtons);
     }
   }, {
     key: 'combineUrl',
@@ -207,7 +192,7 @@ var AdminModals = function () {
   }, {
     key: 'init',
     value: function init() {
-      var _this4 = this;
+      var _this2 = this;
 
       var userSettings = window.AdminModalsSettings || {};
       var settings = {
@@ -228,7 +213,7 @@ var AdminModals = function () {
       this.uniqueIdCounter = 0;
 
       window.addEventListener('storage', function (e) {
-        return _this4.receiveStorageMessage(e);
+        return _this2.receiveStorageMessage(e);
       });
     }
   }, {
@@ -249,6 +234,47 @@ var AdminModals = function () {
         // const messageId = `${parsedMessage[1]}_${parsedMessage[2]}`;
         this.events[parsedMessage[2]]();
       }
+    }
+  }], [{
+    key: 'resizeModal',
+    value: function resizeModal($frame, options, $modal) {
+      if (options.dontResizeWindow === true) {
+        return;
+      }
+      var maxWindowWidth = options.maxWindowWidth || 95;
+      var maxWindowHeight = options.maxWindowHeight || 80;
+
+      var $frameDocument = $($frame[0].contentWindow.document);
+      var parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
+      var parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
+      var frameWidth = $frameDocument.width() + 20;
+      var frameHeight = $frameDocument.height();
+      var newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
+      var newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
+
+      $modal.find('.modal-dialog').css('display', 'table');
+      $frame.width(newWidth);
+      $frame.height(newHeight);
+    }
+  }, {
+    key: 'extractFormButtons',
+    value: function extractFormButtons($frame, options, $modal) {
+      var frameWindow = $frame[0].contentWindow;
+      var f$ = frameWindow.$;
+      var $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
+      var $modalButtons = [];
+      $buttons.each(function () {
+        var _this3 = this;
+
+        var $modalButton = $(this.outerHTML);
+        $modalButton.click(function () {
+          return $(_this3).click();
+        });
+        $modalButtons.push($modalButton);
+        $(this).hide();
+      });
+
+      $modal.find('.modal-footer').empty().append($modalButtons);
     }
   }]);
 

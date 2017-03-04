@@ -11,6 +11,11 @@ class AdminModalsBundle extends AssetBundle
         BootstrapPluginAsset::class,
     ];
 
+    public $css = [
+        // as we don't have much styles for now - there's no use in webpacking or minifying of them
+        'styles.css'
+    ];
+
     public function init()
     {
         $this->sourcePath = __DIR__ . '/dist/';

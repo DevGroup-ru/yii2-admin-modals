@@ -63,13 +63,22 @@ class AdminModals {
     });
     $modal.data('adminModalsUniqueId', ++this.uniqueIdCounter);
 
-    $modal.on('shown.bs.modal', () => {
-      const $frame = $modal.find('.modal-frame');
-      $frame.ready(() => {
-        this.loadInFrame($frame, options, $modal);
-        return false;
+    $modal
+      .on('shown.bs.modal', () => {
+        const $frame = $modal.find('.modal-frame');
+        $frame.ready(() => {
+          this.loadInFrame($frame, options, $modal);
+          return false;
+        });
+      })
+      .on('hidden.bs.modal', () => {
+        const uniqueId = $modal.data('adminModalsUniqueId');
+        // stop listening for storage
+        localStorage.removeItem(`adminModalsMessage:${uniqueId}`);
+        delete this.events[uniqueId];
+        // remove modal DOM element
+        $modal.remove();
       });
-    });
 
     $modal.modal('show');
   }
@@ -98,12 +107,32 @@ class AdminModals {
       $form.submit();
     }
     this.events[$modal.data('adminModalsUniqueId')] = () => {
-      this.extractFormButtons($frame, options, $modal);
+      AdminModals.extractFormButtons($frame, options, $modal);
+      AdminModals.resizeModal($frame, options, $modal);
     };
   }
 
-  extractFormButtons($frame, options, $modal) {
-    console.log('start extract buttons');
+  static resizeModal($frame, options, $modal) {
+    if (options.dontResizeWindow === true) {
+      return;
+    }
+    const maxWindowWidth = options.maxWindowWidth || 95;
+    const maxWindowHeight = options.maxWindowHeight || 80;
+
+    const $frameDocument = $($frame[0].contentWindow.document);
+    const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
+    const parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
+    const frameWidth = $frameDocument.width() + 20;
+    const frameHeight = $frameDocument.height();
+    const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
+    const newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
+
+    $modal.find('.modal-dialog').css('display', 'table');
+    $frame.width(newWidth);
+    $frame.height(newHeight);
+  }
+
+  static extractFormButtons($frame, options, $modal) {
     const frameWindow = $frame[0].contentWindow;
     const f$ = frameWindow.$;
     const $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');

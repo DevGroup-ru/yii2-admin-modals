@@ -85,6 +85,8 @@ js;
         }
 
         //! @todo add Links modifier JS - append magicParam and uniqueId to all links on DOM ready
+        // copypaste some js related to is hash, is external from
+        // https://github.com/miguel-perez/smoothState.js/blob/master/src/jquery.smoothState.js
     }
 
     /**
