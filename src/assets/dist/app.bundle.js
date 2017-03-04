@@ -169,6 +169,10 @@ var AdminModals = function () {
         delete _this2.events[uniqueId];
         // remove modal DOM element
         $modal.remove();
+
+        if (options.closeCallback) {
+          options.closeCallback();
+        }
       });
 
       $modal.modal('show');
