@@ -59,7 +59,7 @@ class AdminModals {
   modalOpen(options) {
     // create modal
     const $modal = $(`
-<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;">   
+<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;" data-width="100%">   
       <div class="modal-header">
         <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">
             <i class="fa fa-times fa-2x"></i>
@@ -68,8 +68,10 @@ class AdminModals {
             ${options.url}
         </a>
       </div>
-     
-      <iframe src="${this.settings.adminModalPageUrl}" frameborder="0" class="modal-body modal-frame"></iframe>
+      <div class="modal-body">
+        <div class="tabs-container"></div>
+        <iframe src="${this.settings.adminModalPageUrl}" frameborder="0" class="modal-frame"></iframe>
+      </div>
     
       <div class="modal-footer">
         
@@ -130,6 +132,7 @@ class AdminModals {
     }
     this.events[$modal.data('adminModalsUniqueId')] = () => {
       AdminModals.extractFormButtons($frame, options, $modal);
+      AdminModals.extractTabs($frame);
       AdminModals.resizeModal($frame, options, $modal);
     };
   }
@@ -159,21 +162,45 @@ class AdminModals {
   static extractFormButtons($frame, options, $modal) {
     const frameWindow = $frame[0].contentWindow;
     const f$ = frameWindow.$;
-    const $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
-    const $modalButtons = [];
-    $buttons.each(function() {
-      const $modalButton = $(this.outerHTML);
-      $modalButton.click(() => $(this).click());
-      $modalButtons.push($modalButton);
-      $(this).hide();
-    });
+    const $row = f$('.form-actions,.admin-modals__form-buttons');
+    if ($row.length) {
+      const $buttons = $row.find('input[type=submit],button[type=submit],.btn');
+      const $modalButtons = [];
+      $buttons.each(function () {
+        const $modalButton = $(this.outerHTML);
+        $modalButton.click(() => $(this).click());
+        $modalButtons.push($modalButton);
+        $(this).hide();
+      });
 
-    $modal.find('.modal-footer')
-      .empty()
-      .append(
-        $modalButtons
-      );
+      $modal.find('.modal-footer')
+        .empty()
+        .append(
+          $modalButtons
+        );
+    }
   }
+
+  static extractTabs($frame) {
+    const frameWindow = $frame[0].contentWindow;
+    const f$ = frameWindow.$;
+    const $tabs = f$('.nav-tabs');
+    const $tabsContainer = $('.tabs-container').empty();
+    if ($tabs.length) {
+      const html = $tabs[0].outerHTML;
+      const $newTabs = $(html);
+      $newTabs.find('a').click(function () {
+        const clickedHref = $(this).attr('href');
+        $tabs.find('a').filter(function() {
+          return $(this).attr('href') === clickedHref;
+        }).click();
+      });
+      $tabsContainer.append($newTabs);
+      $tabs.hide();
+      f$('h1').remove();
+    }
+  }
+
 
   combineUrl(options, magicParamValue = 'modal') {
     let url = options.url;

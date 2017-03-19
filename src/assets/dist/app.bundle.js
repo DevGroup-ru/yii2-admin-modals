@@ -149,7 +149,7 @@ var AdminModals = function () {
       var _this2 = this;
 
       // create modal
-      var $modal = $('\n<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;">   \n      <div class="modal-header">\n        <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">\n            <i class="fa fa-times fa-2x"></i>\n        </a>\n        <a href="' + this.combineUrl(options, 'tab') + '" target="_blank" class="modal-title">\n            ' + options.url + '\n        </a>\n      </div>\n     \n      <iframe src="' + this.settings.adminModalPageUrl + '" frameborder="0" class="modal-body modal-frame"></iframe>\n    \n      <div class="modal-footer">\n        \n      </div>  \n</div>');
+      var $modal = $('\n<div class="modal fade AdminModal" tabindex="-1" role="dialog" style="display:none;" data-width="100%">   \n      <div class="modal-header">\n        <a href="#" data-dismiss="modal" aria-hidden="true" class="pull-right">\n            <i class="fa fa-times fa-2x"></i>\n        </a>\n        <a href="' + this.combineUrl(options, 'tab') + '" target="_blank" class="modal-title">\n            ' + options.url + '\n        </a>\n      </div>\n      <div class="modal-body">\n        <div class="tabs-container"></div>\n        <iframe src="' + this.settings.adminModalPageUrl + '" frameborder="0" class="modal-frame"></iframe>\n      </div>\n    \n      <div class="modal-footer">\n        \n      </div>  \n</div>');
       $modal.find('.modal-title').click(function () {
         $modal.modal('hide');
         return true;
@@ -199,6 +199,7 @@ var AdminModals = function () {
       }
       this.events[$modal.data('adminModalsUniqueId')] = function () {
         AdminModals.extractFormButtons($frame, options, $modal);
+        AdminModals.extractTabs($frame);
         AdminModals.resizeModal($frame, options, $modal);
       };
     }
@@ -267,20 +268,44 @@ var AdminModals = function () {
     value: function extractFormButtons($frame, options, $modal) {
       var frameWindow = $frame[0].contentWindow;
       var f$ = frameWindow.$;
-      var $buttons = f$('.form-group,.form-actions,.admin-modals__form-buttons').find('input[type=submit],button[type=submit],.btn');
-      var $modalButtons = [];
-      $buttons.each(function () {
-        var _this3 = this;
+      var $row = f$('.form-actions,.admin-modals__form-buttons');
+      if ($row.length) {
+        var $buttons = $row.find('input[type=submit],button[type=submit],.btn');
+        var $modalButtons = [];
+        $buttons.each(function () {
+          var _this3 = this;
 
-        var $modalButton = $(this.outerHTML);
-        $modalButton.click(function () {
-          return $(_this3).click();
+          var $modalButton = $(this.outerHTML);
+          $modalButton.click(function () {
+            return $(_this3).click();
+          });
+          $modalButtons.push($modalButton);
+          $(this).hide();
         });
-        $modalButtons.push($modalButton);
-        $(this).hide();
-      });
 
-      $modal.find('.modal-footer').empty().append($modalButtons);
+        $modal.find('.modal-footer').empty().append($modalButtons);
+      }
+    }
+  }, {
+    key: 'extractTabs',
+    value: function extractTabs($frame) {
+      var frameWindow = $frame[0].contentWindow;
+      var f$ = frameWindow.$;
+      var $tabs = f$('.nav-tabs');
+      var $tabsContainer = $('.tabs-container').empty();
+      if ($tabs.length) {
+        var html = $tabs[0].outerHTML;
+        var $newTabs = $(html);
+        $newTabs.find('a').click(function () {
+          var clickedHref = $(this).attr('href');
+          $tabs.find('a').filter(function () {
+            return $(this).attr('href') === clickedHref;
+          }).click();
+        });
+        $tabsContainer.append($newTabs);
+        $tabs.hide();
+        f$('h1').remove();
+      }
     }
   }]);
 

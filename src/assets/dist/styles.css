@@ -1,8 +1,12 @@
-.modal-body {
+.modal-frame {
   position: relative;
   margin: 0;
   width: calc(100% - 2px);
   height: 100%;
   padding: 0;
   overflow: scroll;
+}
+.modal-open .modal-scrollable .modal {
+  transform: translate(0, -50%) !important;
+  margin-top: 0 !important;
 }
