@@ -148,7 +148,7 @@ class AdminModals {
 
     const $frameDocument = $($frame[0].contentWindow.document);
     // const parentWidthLimit = (options.windowWidthLimit || Math.floor($(window).width() * maxWindowWidth / 100)) - 60;
-    const parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 100;
+    const parentHeightLimit = (options.windowHeightLimit || Math.floor($(window).height() * maxWindowHeight / 100)) - 120;
     // const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
     const frameHeight = Math.max($frameDocument.height(), minWindowHeight);
     // const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;

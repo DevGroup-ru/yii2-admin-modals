@@ -23,9 +23,9 @@ class ExtensionBootstrap implements BootstrapInterface
         }
 
         if (array_key_exists('adminModals', $app->components) === false) {
-            $app->components['adminModals'] = [
+            $app->set('adminModals', [
                 'class' => 'DevGroup\AdminModals\components\AdminModals',
-            ];
+            ]);
         }
         $app->on(Application::EVENT_BEFORE_ACTION, function() {
             /** @var AdminModals $adminModals */
