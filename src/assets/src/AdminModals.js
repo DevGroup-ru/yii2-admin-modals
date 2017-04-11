@@ -152,7 +152,11 @@ class AdminModals {
     // const frameWidth = Math.max($frameDocument.width() + 20, minWindowWidth);
     const frameHeight = Math.max($frameDocument.height(), minWindowHeight);
     // const newWidth = frameWidth < parentWidthLimit ? frameWidth : parentWidthLimit;
-    const newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
+    let newHeight = frameHeight < parentHeightLimit ? frameHeight : parentHeightLimit;
+    const modalBody = $modal.find('.modal-body').height();
+    if (newHeight < modalBody) {
+      newHeight = modalBody;
+    }
 
     $modal.find('.modal-dialog').css('display', 'table');
     // $frame.width(newWidth);
@@ -185,6 +189,9 @@ class AdminModals {
     const frameWindow = $frame[0].contentWindow;
     const f$ = frameWindow.$;
     const $tabs = f$('.nav-tabs');
+    if ($tabs.hasClass('admin-modals__dont_extract')) {
+      return;
+    }
     const $tabsContainer = $('.tabs-container').empty();
     if ($tabs.length) {
       const html = $tabs[0].outerHTML;
