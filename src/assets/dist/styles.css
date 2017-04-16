@@ -1,5 +1,5 @@
 .modal-frame {
-  position: relative;
+  position: absolute;
   margin: 0;
   width: calc(100% - 2px);
   height: 100%;

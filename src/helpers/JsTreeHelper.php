@@ -33,10 +33,18 @@ function modalOpen(node) {
     data: $data,
     method: $method,
     closeCallback: function() {
+      var oldUrl =$(node.reference.context).jstree().settings.core.data.url;
+      var oldUrlString = oldUrl;
+      if (typeof oldUrl === "function") {
+        oldUrlString = oldUrl();
+      }
+      $(node.reference.context).jstree().settings.core.data.url = 
+        oldUrlString.replace(/_ts=\d+/, '_ts=R' + (+ new Date())); 
       $(node.reference.context).jstree().refresh();
+      $(node.reference.context).jstree().settings.core.data.url = oldUrl;
     }
   });
-  return true;
+  return false;
 }
 js
         );

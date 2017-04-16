@@ -160,7 +160,7 @@ class AdminModals {
 
     $modal.find('.modal-dialog').css('display', 'table');
     // $frame.width(newWidth);
-    $frame.attr('style', `${$frame.attr('style')}; height: ${newHeight}px !important`);
+    // $frame.attr('style', `${$frame.attr('style')}; height: ${newHeight}px !important`);
   }
 
   static extractFormButtons($frame, options, $modal) {
