@@ -120,6 +120,9 @@ var AdminModals = function () {
 
       $(document).on('click', this.settings.modalActionSelector, function () {
         var $this = $(this);
+        if ($this.attr('target') === '_blank') {
+          return true;
+        }
         var tagName = $this.prop('tagName').toLowerCase();
         var modalOpenOptions = {
           url: '#',
