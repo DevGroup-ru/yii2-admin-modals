@@ -175,6 +175,8 @@ var AdminModals = function () {
 
         if (options.closeCallback) {
           options.closeCallback();
+        } else if (_this2.settings.closeCallback) {
+          _this2.settings.closeCallback();
         }
       });
 

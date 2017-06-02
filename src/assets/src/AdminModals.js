@@ -104,6 +104,8 @@ class AdminModals {
 
         if (options.closeCallback) {
           options.closeCallback();
+        } else if (this.settings.closeCallback) {
+          this.settings.closeCallback();
         }
       });
 
